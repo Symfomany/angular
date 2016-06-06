@@ -10,9 +10,10 @@ angular.module('todomvc')
 	.controller('TodoCtrl', function TodoCtrl($scope, $http, $routeParams, $filter, store) {
 		'use strict';
 
+		var users = [];
 		$http.get('http://jsonplaceholder.typicode.com/users').
 			success(function(data, status) {
-				$scope.users = data;
+				$scope.users = users = data;
 		}).
 			error(function(data, status) {
 				console.log('erreur...');
@@ -22,6 +23,16 @@ angular.module('todomvc')
 
 		$scope.newTodo = '';
 		$scope.editedTodo = null;
+
+
+		$scope.filtreById = function () {
+			console.log('ok');
+			users.forEach(function (user) {
+				console.log(user);
+				user.completed = true;
+				}
+			});
+		};
 
 		$scope.$watch('todos', function () {
 			$scope.remainingCount = $filter('filter')(todos, { completed: false }).length;
@@ -36,6 +47,9 @@ angular.module('todomvc')
 				{ completed: false } : (status === 'completed') ?
 				{ completed: true } : {};
 		});
+
+
+
 
 		$scope.addTodo = function () {
 			var newTodo = {

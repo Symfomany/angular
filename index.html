@@ -22,7 +22,6 @@
 
     <!-- Custom Theme Style -->
     <link href="build/css/custom.min.css" rel="stylesheet">
-    <link href="bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
@@ -36,6 +35,17 @@
 		<script src="js/directives/todoFocus.js"></script>
 		<script src="js/directives/todoEscape.js"></script>
 
+    <style>
+    .text-blue{
+      background-color: white !important;
+    }
+    .text-red{
+      background-color: orange !important;
+    }
+      .completed{
+        background-color: orange;
+      }
+    </style>
   </head>
 
   <body class="nav-md" ng-app="todomvc">
@@ -321,10 +331,14 @@
           <!-- /top tiles -->
 
 
-
+          <hr />
+          <div ng-controller="UserCtrl">
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-              <input type="text" placeholder="Rechercher un post" class="form-control" ng-model="search">
+              <input type="text" placeholder="Rechercher un post" class="form-control" ng-model="search.name">
+              <label>Strictement égale <input type="checkbox"  ng-model="strict"></label><br>
+              <label>Que ceux dont l'ID > 2 <input type="checkbox" ng-click="filtreById()"></label><br>
+
             </div>
           </div>
           <div class="row">
@@ -332,21 +346,10 @@
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Liste des Users</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                        <ul class="dropdown-menu" role="menu">
-                          <li><a href="#">Settings 1</a>
-                          </li>
-                          <li><a href="#">Settings 2</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
+                    <p>Tous cochés:  {{ allChecked }}</p>
+                    <p class="pull-right" ng-show="completedCount != 0">Il y a des cochés !</p>
+                    <p>Nb de selectionnées:  {{ completedCount }}</p>
+                    <p>Nb de non-selectionnées:  {{ remainingCount }}</p>
                     <div class="clearfix"></div>
                   </div>
 
@@ -367,9 +370,10 @@
                               <th>Website</th>
                             </tr>
                           </thead>
-                          <tbody ng-controller="UserCtrl">
-                            <tr ng-repeat="user in users">
-                              <th scope="row">{{ user.id }}</th>
+                          <tbody >
+                            <tr  ng-repeat="user in users | filter: search:strict" ng-class="{'text-red': user.completed, 'text-blue': !user.completed}">
+                              <th  scope="row">{{ user.id }}</th>
+                              <td><input type="checkbox" ng-click="todoChecked(user)" /></td>
                               <td>{{ user.name }}</td>
                               <td>{{ user.username }}</td>
                               <td>{{ user.email }}</td>
@@ -381,7 +385,7 @@
                         </table>
                       </div>
 
-                      <form>
+                      <form ng-disabled="saving" autofocus>
                         <input class="form-control" placeholder="Nom" ng-model="name" />
                         <input class="form-control" placeholder="Pseudonyme" ng-model="username" />
                         <input class="form-control" placeholder="Email" ng-model="email" />
@@ -458,6 +462,7 @@
 
 
 
+                  </div>
                   </div>
                 </div>
               </div>
