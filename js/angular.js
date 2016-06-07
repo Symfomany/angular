@@ -25,12 +25,12 @@ angular
 });
 
 angular.module('todomvc', [])
-.controller('UserCtrl', function UserCtrl($scope, $http,$filter) {
+
+.controller('UserCtrl', function UserCtrl($scope, $http, $filter) {
   'use strict';
 
   var users = [];
-  var remainingCount = 0;
-
+  
   //load datas
   $http.get('http://beta.json-generator.com/api/json/get/4kbKfU1N-').
     success(function(data, status) {
@@ -47,6 +47,7 @@ angular.module('todomvc', [])
             console.log('erreur...');
         });
   		});
+
   }).
     error(function(data, status) {
       console.log('erreur...');
@@ -75,16 +76,8 @@ angular.module('todomvc', [])
 		});
 
 
-	$scope.filtreById = function () {
-		users.forEach(function (user) {
-			user.completed = !user.completed;
-		});
-	};
-
   $scope.addUser = function(){
-    $scope.saving = true;
-
-    users.push({
+    $scope.users.push({
       name: $scope.name,
       username: $scope.username,
       email: $scope.email,
@@ -92,15 +85,6 @@ angular.module('todomvc', [])
       phone: $scope.phone,
       website: $scope.website
     });
-
-    store.insert(newTodo)
-		.then(function success() {
-			$scope.name = $scope.name = '';
-		})
-		.finally(function () {
-			$scope.saving = false;
-		});
-
 
     $scope.name = '';
   }
