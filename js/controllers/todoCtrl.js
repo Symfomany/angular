@@ -11,7 +11,7 @@ angular.module('todomvc')
 		'use strict';
 
 		var users = [];
-		$http.get('http://jsonplaceholder.typicode.com/users').
+		$http.get('http://beta.json-generator.com/api/json/get/4kbKfU1N-').
 			success(function(data, status) {
 				$scope.users = users = data;
 		}).

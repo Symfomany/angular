@@ -1,10 +1,10 @@
 angular
 .module('todomvc', ["routeProvider"])
 .config(function($routeProvider) {
-  $routeProvider.when('/view1', {
-      controller:'UserCtrl',
-      templateUrl:'index.html',
-      resolve: {
+  var routeConfig = {
+			controller: 'UserCtrl',
+			templateUrl: 'index.html',
+			resolve: {
 				store: function (todoStorage) {
 					// Get the correct module (API or localStorage).
 					return todoStorage.then(function (module) {
@@ -13,7 +13,15 @@ angular
 					});
 				}
 			}
-  });
+		};
+
+		$routeProvider
+			.when('/', routeConfig)
+			.when('/:status', routeConfig)
+			.otherwise({
+				redirectTo: '/'
+			});
+
 });
 
 angular.module('todomvc', [])
@@ -24,16 +32,26 @@ angular.module('todomvc', [])
   var remainingCount = 0;
 
   //load datas
-  $http.get('http://jsonplaceholder.typicode.com/users').
+  $http.get('http://beta.json-generator.com/api/json/get/4kbKfU1N-').
     success(function(data, status) {
       $scope.users = users = data;
       users.forEach(function (user) {
   			user.completed = false;
+
+        $http.get('http://api.randomuser.me/?nat=fr').
+          success(function(data, status) {
+            user.dob = data.dob;
+            user.registered = data.registered;
+        }).
+          error(function(data, status) {
+            console.log('erreur...');
+        });
   		});
   }).
     error(function(data, status) {
       console.log('erreur...');
   });
+
 
   $scope.todoChecked  = function(user){
     user.completed = !user.completed;
@@ -46,6 +64,15 @@ angular.module('todomvc', [])
   			$scope.allChecked = !$scope.remainingCount;
 		}, true);
 
+
+    // Monitor the current route for changes and adjust the filter accordingly.
+		$scope.$on('$routeChangeSuccess', function () {
+      console.log("route changée");
+			var status = $scope.status = $routeParams.status || '';
+			$scope.statusFilter = (status === 'active') ?
+				{ completed: false } : (status === 'completed') ?
+				{ completed: true } : {};
+		});
 
 
 	$scope.filtreById = function () {

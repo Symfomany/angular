@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="fr" lang="en" data-framework="angularjs">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -36,11 +36,18 @@
 		<script src="js/directives/todoEscape.js"></script>
 
     <style>
+    tr{
+      -webkit-transition: all .6s ease-in;
+      -moz-transition: all .6s ease-in;
+      -o-transition: all .6s ease-in;
+      transition: all .6s ease-in;
+    }
     .text-blue{
       background-color: white !important;
     }
     .text-red{
-      background-color: orange !important;
+      background-color: #FFE3D9 !important;
+      text-decoration: underline;
     }
       .completed{
         background-color: orange;
@@ -331,26 +338,31 @@
           <!-- /top tiles -->
 
 
-          <hr />
-          <div ng-controller="UserCtrl">
-          <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+          <div ng-controller="UserCtrl"  class="row">
+
+            <div class="col-md-3 col-sm-3 col-xs-3 form-group">
               <input type="text" placeholder="Rechercher un post" class="form-control" ng-model="search.name">
               <label>Strictement égale <input type="checkbox"  ng-model="strict"></label><br>
               <label>Que ceux dont l'ID > 2 <input type="checkbox" ng-click="filtreById()"></label><br>
 
+              <div id="filters" class="btn-group nav" role="group" >
+                <a ng-class="{selected: status == ''} " class="btn btn-sm active" href="#/"  >All</a>
+                <a ng-class="{selected: status == 'active'}" class="btn btn-sm" href="#/active">Active</a>
+                <a ng-class="{selected: status == 'completed'}" class="btn btn-sm" href="#/completed">Completed</a>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-9 col-sm-9 col-xs-9">
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Liste des Users</h2>
-                    <p>Tous cochés:  {{ allChecked }}</p>
-                    <p class="pull-right" ng-show="completedCount != 0">Il y a des cochés !</p>
-                    <p>Nb de selectionnées:  {{ completedCount }}</p>
-                    <p>Nb de non-selectionnées:  {{ remainingCount }}</p>
-                    <div class="clearfix"></div>
+                    <hr class="clear" />
+                    <div class="pull-right">
+                      <p class="alert alert-danger" ng-show="completedCount">Il y a des cochés !</p>
+                      <hr />
+                      <p>Tous cochés:  {{ allChecked }}</p>
+                      <p>Nb de selectionnées:  <span class="badge">{{ completedCount }}</span></p>
+                      <p>Nb de non-selectionnées:  <span class="badge">{{ remainingCount }}</span></p>
+                    </div>
                   </div>
 
                   <div class="x_content">
@@ -362,24 +374,29 @@
                           <thead>
                             <tr>
                               <th>Id</th>
+                              <th>Image</th>
+                              <th>Gender</th>
                               <th>Nom</th>
                               <th>Username</th>
                               <th>Email</th>
                               <th>Adresse</th>
                               <th>Telephone</th>
-                              <th>Website</th>
+                              <th>Website / Company</th>
+                              <th>Tel</th>
                             </tr>
                           </thead>
                           <tbody >
                             <tr  ng-repeat="user in users | filter: search:strict" ng-class="{'text-red': user.completed, 'text-blue': !user.completed}">
-                              <th  scope="row">{{ user.id }}</th>
-                              <td><input type="checkbox" ng-click="todoChecked(user)" /></td>
+                              <th  scope="row">{{ user.id }} <input type="checkbox" ng-click="todoChecked(user)" /></th>
+                              <td><img src="{{ user.picture }}" class="img-circle"/></th>
+                              <td><span ng-class="{'fa fa-female': !user.gender, 'fa fa-male': user.gender}"></span></th>
                               <td>{{ user.name }}</td>
-                              <td>{{ user.username }}</td>
-                              <td>{{ user.email }}</td>
+                              <td><b>{{ user.username }}</b></td>
+                              <td><a>{{ user.email }}</a></td>
                               <td>{{ user.address.street }} {{ user.address.city }} {{ user.address.zipcode }}</td>
                               <td>{{ user.phone }}</td>
-                              <td>{{ user.website }}</td>
+                              <td><a>{{ user.website }}</i> {{ user.compagny.catchPhrase }}</td>
+                              <td><i>{{ user.phone }}</i></td>
                             </tr>
                           </tbody>
                         </table>
